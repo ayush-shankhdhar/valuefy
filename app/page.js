@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { RefreshCw, Save, ArrowRight, ArrowLeft, Loader2, AlertCircle, TrendingUp, DollarSign, PieChart } from 'lucide-react';
+import { RefreshCw, Save, ArrowRight, Loader2, AlertCircle, TrendingUp, DollarSign, PieChart, Info, Landmark } from 'lucide-react';
 import { useClient } from '@/lib/ClientContext';
 
 export default function PortfolioComparison() {
@@ -70,205 +70,216 @@ export default function PortfolioComparison() {
 
   if (loading) {
     return (
-      <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
-        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
-        <p className="text-gray-500 font-medium animate-pulse">Analyzing portfolio for {clientName}...</p>
+      <div className="flex h-[60vh] flex-col items-center justify-center gap-6">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <PieChart className="w-6 h-6 text-indigo-500 animate-pulse" />
+          </div>
+        </div>
+        <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-xs">Simulating Portfolio Drift...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl flex items-start gap-4 shadow-sm">
-        <AlertCircle className="w-6 h-6 shrink-0 mt-0.5" />
+      <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-8 rounded-3xl flex items-start gap-5 backdrop-blur-md">
+        <AlertCircle className="w-8 h-8 shrink-0" />
         <div>
-          <h3 className="font-bold text-lg mb-1">Analysis Failed</h3>
-          <p>{error}</p>
+          <h3 className="font-black text-xl mb-2 tracking-tight">System Outage</h3>
+          <p className="text-red-400/80 leading-relaxed font-medium">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Portfolio Analysis</h1>
-          <p className="text-gray-500 mt-1.5 text-lg">
-            Rebalancing recommendation for <span className="font-semibold text-indigo-600">{clientName}</span>
+          <div className="flex items-center gap-2 mb-3">
+             <div className="h-0.5 w-10 bg-indigo-500 rounded-full"></div>
+             <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em]">Client Overview</p>
+          </div>
+          <h1 className="text-5xl font-black text-white tracking-tighter leading-none">
+            {clientName}<span className="text-indigo-600 block sm:inline">'s</span> <span className="text-indigo-600">Rebalance</span>
+          </h1>
+          <p className="text-slate-500 mt-4 text-lg font-medium max-w-2xl">
+            Intelligent asset allocation analysis based on your custom model portfolio parameters.
           </p>
         </div>
         
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-4">
           <button 
             onClick={fetchData}
-            className="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:text-indigo-600 font-medium flex items-center gap-2 shadow-sm transition-all focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className="px-6 py-4 bg-slate-800/80 border border-slate-700/50 text-slate-300 rounded-2xl hover:text-white hover:bg-slate-700 font-bold flex items-center gap-3 transition-all active:scale-95 glass shadow-xl"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-5 h-5" />
             Recalculate
           </button>
           
           <button 
             onClick={handleSave}
             disabled={saving || savedSuccess || (data.totalBuy === 0 && data.totalSell === 0)}
-            className={`px-5 py-2.5 text-white shadow-md rounded-lg font-medium flex items-center gap-2 transition-all focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:outline-none
-              ${savedSuccess ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'} 
-              ${(saving || (data.totalBuy === 0 && data.totalSell === 0)) ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5'}`}
+            className={`px-8 py-4 text-white shadow-2xl rounded-2xl font-black uppercase tracking-widest text-xs flex items-center gap-3 transition-all active:scale-95 focus:ring-4 focus:ring-indigo-500/20
+              ${savedSuccess ? 'bg-emerald-600 shadow-emerald-500/20' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30'} 
+              ${(saving || (data.totalBuy === 0 && data.totalSell === 0)) ? 'opacity-40 cursor-not-allowed' : 'hover:-translate-y-1'}`}
           >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 
-             savedSuccess ? <Save className="w-4 h-4" /> : 
-             <Save className="w-4 h-4" />}
-            {savedSuccess ? 'Saved to History' : 'Save Recommendation'}
+            {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : 
+             savedSuccess ? <Save className="w-5 h-5" /> : 
+             <Save className="w-5 h-5" />}
+            {savedSuccess ? 'Strategy Saved' : 'Commit Rebalance'}
           </button>
         </div>
       </div>
 
-      {/* Modern Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-          <div className="absolute right-0 top-0 w-24 h-24 bg-gray-50 rounded-bl-full -z-0 group-hover:scale-110 transition-transform"></div>
+      {/* Extreme Dark Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-slate-900 shadow-2xl rounded-[32px] p-8 border border-white/5 relative overflow-hidden group">
+          <div className="absolute -right-4 -top-4 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-colors"></div>
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-gray-100 rounded-lg text-gray-600">
-                <PieChart className="w-5 h-5" />
-              </div>
-              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Value</p>
+            <div className="bg-indigo-500/10 w-12 h-12 rounded-2xl flex items-center justify-center text-indigo-400 mb-6">
+              <Landmark className="w-6 h-6" />
             </div>
-            <p className="text-3xl font-extrabold text-gray-900">{formatCurrency(data.totalPortfolioValue)}</p>
+            <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Total Net Worth</p>
+            <p className="text-3xl font-black text-white tracking-tight">{formatCurrency(data.totalPortfolioValue)}</p>
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent -z-0"></div>
+        <div className="bg-slate-900 shadow-2xl rounded-[32px] p-8 border border-blue-500/10 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
-                <ArrowRight className="w-5 h-5 -rotate-45" />
-              </div>
-              <p className="text-sm font-semibold text-blue-800 uppercase tracking-wider">Total BUY</p>
+            <div className="bg-blue-500/10 w-12 h-12 rounded-2xl flex items-center justify-center text-blue-400 mb-6">
+              <ArrowRight className="w-6 h-6 -rotate-45" />
             </div>
-            <p className="text-3xl font-extrabold text-blue-700">{formatCurrency(data.totalBuy)}</p>
+            <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Buy Volume</p>
+            <p className="text-3xl font-black text-blue-400 tracking-tight">{formatCurrency(data.totalBuy)}</p>
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-2xl border border-orange-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 to-transparent -z-0"></div>
+        <div className="bg-slate-900 shadow-2xl rounded-[32px] p-8 border border-orange-500/10 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-orange-100 rounded-lg text-orange-600">
-                <ArrowRight className="w-5 h-5 rotate-45" />
-              </div>
-              <p className="text-sm font-semibold text-orange-800 uppercase tracking-wider">Total SELL</p>
+            <div className="bg-orange-500/10 w-12 h-12 rounded-2xl flex items-center justify-center text-orange-400 mb-6">
+              <ArrowRight className="w-6 h-6 rotate-45" />
             </div>
-            <p className="text-3xl font-extrabold text-orange-700">{formatCurrency(data.totalSell)}</p>
+            <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Sell Volume</p>
+            <p className="text-3xl font-black text-orange-400 tracking-tight">{formatCurrency(data.totalSell)}</p>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 p-6 rounded-2xl shadow-lg shadow-indigo-200 text-white relative overflow-hidden">
-          <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-bl-full backdrop-blur-3xl -z-0"></div>
+        <div className="bg-gradient-to-tr from-indigo-700 to-violet-700 shadow-[0_20px_50px_rgba(79,70,229,0.3)] rounded-[32px] p-8 text-white relative overflow-hidden group">
+          <div className="absolute right-0 bottom-0 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
-                <DollarSign className="w-5 h-5" />
-              </div>
-              <p className="text-sm font-bold text-indigo-100 uppercase tracking-wider">Cash Needed</p>
+            <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center text-white mb-6 backdrop-blur-md border border-white/20">
+              <DollarSign className="w-6 h-6" />
             </div>
-            <p className="text-3xl font-extrabold">{formatCurrency(data.freshMoneyNeeded)}</p>
+            <p className="text-xs font-bold text-indigo-100 uppercase tracking-widest mb-2">Capital Injection</p>
+            <p className="text-3xl font-black tracking-tight">{formatCurrency(data.freshMoneyNeeded)}</p>
           </div>
         </div>
       </div>
 
-      {/* Main Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-5 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-800">Asset Level Drift</h2>
-          <span className="text-sm text-gray-500 font-medium bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
-            {data.items?.length || 0} Assets Investigated
-          </span>
+      {/* Main Glass Table */}
+      <div className="bg-slate-900/50 backdrop-blur-xl rounded-[32px] shadow-2xl border border-white/5 overflow-hidden group">
+        <div className="px-10 py-8 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+               <Info className="w-5 h-5 text-indigo-500" />
+               <h2 className="text-xl font-black text-white tracking-tight">Drift Analysis</h2>
+            </div>
+            <div className="flex items-center gap-2 bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Real-time Sync Active
+            </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left whitespace-nowrap">
-            <thead className="uppercase tracking-wider border-b border-gray-200 bg-white text-gray-500 text-[11px] font-bold">
+            <thead className="border-b border-white/5 bg-white/[0.01] text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
               <tr>
-                <th className="px-6 py-4 w-1/3">Fund & Current Value</th>
-                <th className="px-6 py-4 text-center">Current %</th>
-                <th className="px-6 py-4 text-center">Target %</th>
-                <th className="px-6 py-4 text-center">Drift</th>
-                <th className="px-6 py-4 text-center">Action</th>
-                <th className="px-6 py-4 text-right">Order Amount</th>
+                <th className="px-10 py-6">Instrument</th>
+                <th className="px-6 py-6 text-center">Current</th>
+                <th className="px-6 py-6 text-center">Model</th>
+                <th className="px-6 py-6 text-center">Variance</th>
+                <th className="px-6 py-6 text-center">Action</th>
+                <th className="px-10 py-6 text-right">Order Size</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-white/[0.03]">
               {data.items?.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
-                    No holdings or recommendations found for this client.
+                  <td colSpan="6" className="px-10 py-24 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="p-4 bg-slate-800 rounded-2xl">
+                         <Info className="w-8 h-8 text-slate-600" />
+                      </div>
+                      <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No holdings detected for this wallet.</p>
+                    </div>
                   </td>
                 </tr>
               ) : data.items.map((item) => (
-                <tr key={item.fund_id} className="hover:bg-gray-50/80 transition-colors group">
-                  <td className="px-6 py-4">
-                    <p className="font-bold text-gray-900">{item.fund_name}</p>
-                    <p className="text-sm text-gray-500 font-medium mt-0.5">{formatCurrency(item.current_value)}</p>
+                <tr key={item.fund_id} className="hover:bg-white/[0.02] transition-all duration-300 group">
+                  <td className="px-10 py-8">
+                    <p className="font-black text-white text-base group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{item.fund_name}</p>
+                    <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-wide">{formatCurrency(item.current_value)}</p>
                   </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="inline-flex items-center justify-center bg-gray-100 text-gray-700 px-2.5 py-1 rounded font-semibold text-sm">
+                  <td className="px-6 py-8 text-center">
+                    <span className="inline-flex items-center justify-center bg-slate-800/50 text-slate-300 px-3 py-1.5 rounded-xl font-black text-xs border border-slate-700/30">
                       {item.current_pct}%
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="px-6 py-8 text-center">
                     {item.target_pct !== null ? (
-                      <span className="inline-flex items-center justify-center bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-1 rounded font-bold text-sm">
+                      <span className="inline-flex items-center justify-center bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1.5 rounded-xl font-black text-xs">
                         {item.target_pct}%
                       </span>
                     ) : (
-                      <span className="text-gray-300 font-medium">-</span>
+                      <span className="text-slate-700 font-black">-</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="px-6 py-8 text-center">
                     {item.drift !== null ? (
-                      <div className="flex items-center justify-center gap-1.5">
-                        {item.drift > 0.01 ? (
-                          <TrendingUp className="w-4 h-4 text-blue-500" />
-                        ) : item.drift < -0.01 ? (
-                          <TrendingUp className="w-4 h-4 text-orange-500 rotate-180" />
-                        ) : null}
-                        <span className={`font-bold text-sm
-                          ${item.drift > 0.01 ? 'text-blue-700' : 
-                            item.drift < -0.01 ? 'text-orange-700' : 'text-gray-400'}`}>
+                      <div className="flex items-center justify-center gap-2">
+                        <span className={`font-black text-xs uppercase tracking-widest
+                          ${item.drift > 0.01 ? 'text-blue-400' : 
+                            item.drift < -0.01 ? 'text-orange-400' : 'text-slate-600'}`}>
+                          {item.drift > 0 ? 'Surplus' : item.drift < 0 ? 'Deficit' : 'Stable'}
+                        </span>
+                        <span className={`font-black text-sm
+                          ${item.drift > 0.01 ? 'text-blue-400' : 
+                            item.drift < -0.01 ? 'text-orange-400' : 'text-slate-600'}`}>
                           {item.drift > 0 ? '+' : ''}{item.drift.toFixed(2)}%
                         </span>
                       </div>
                     ) : (
-                      <span className="text-gray-300 font-medium">-</span>
+                      <span className="text-slate-700 font-black">-</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="px-6 py-8 text-center">
                     {item.action === 'BUY' && (
-                      <span className="inline-flex items-center justify-center w-20 py-1.5 rounded-lg text-[11px] font-black tracking-wider bg-blue-100 text-blue-700 border border-blue-200">
+                      <span className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-[10px] font-black tracking-[0.2em] bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]">
                         BUY
                       </span>
                     )}
                     {item.action === 'SELL' && (
-                      <span className="inline-flex items-center justify-center w-20 py-1.5 rounded-lg text-[11px] font-black tracking-wider bg-orange-100 text-orange-700 border border-orange-200">
+                      <span className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-[10px] font-black tracking-[0.2em] bg-orange-500/10 text-orange-400 border border-orange-500/20 shadow-[0_0_20px_rgba(249,115,22,0.1)]">
                         SELL
                       </span>
                     )}
                     {item.action === 'REVIEW' && (
-                      <span className="inline-flex items-center justify-center w-20 py-1.5 rounded-lg text-[11px] font-black tracking-wider bg-yellow-100 text-yellow-800 border border-yellow-200">
+                      <span className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-[10px] font-black tracking-[0.2em] bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
                         REVIEW
                       </span>
                     )}
                     {item.action === 'OK' && (
-                      <span className="inline-flex items-center justify-center w-20 py-1.5 rounded-lg text-[11px] font-bold tracking-wider bg-gray-100 text-gray-500 border border-gray-200">
-                        OK
+                      <span className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-[10px] font-black tracking-[0.2em] bg-slate-800 text-slate-500 border border-slate-700/50">
+                        SAFE
                       </span>
                     )}
                   </td>
-                  <td className={`px-6 py-4 text-right font-black text-base
-                    ${item.action === 'BUY' ? 'text-blue-600' : 
-                      item.action === 'SELL' ? 'text-orange-600' : 
-                      item.action === 'REVIEW' ? 'text-yellow-700' : 'text-gray-300'}`}>
+                  <td className={`px-10 py-8 text-right font-black text-xl tracking-tighter
+                    ${item.action === 'BUY' ? 'text-blue-400' : 
+                      item.action === 'SELL' ? 'text-orange-400' : 
+                      item.action === 'REVIEW' ? 'text-amber-400' : 'text-slate-800'}`}>
                     {item.amount > 0 ? formatCurrency(item.amount) : '-'}
                   </td>
                 </tr>
